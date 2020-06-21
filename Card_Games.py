@@ -1,3 +1,7 @@
+# Python: 3.8.2
+# Author: Alex Moffat
+# Purpose: Some card games that show off basic programming skills
+#======== War (2 Player),  5 card stud poker (2 - 10 players)
 
 import random
 

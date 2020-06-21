@@ -1,3 +1,7 @@
+# Python: 3.8.2
+# Author: Alex Moffat
+# Purpose: Misc assignments during Tech Academy Boot Camp
+
 myDog = 'Albert'
 myCat = 'Zuli'
 print(myDog)

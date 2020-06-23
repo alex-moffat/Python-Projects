@@ -1,6 +1,10 @@
 # Python: 3.8.2
 # Author: Alex Moffat
 # Purpose: Misc assignments during Tech Academy Boot Camp
+''' Tags: print, len, upper, lower, capitalize, in, not in, slice, strip, tuples, dictionaries, operators, list, iterate, reverse, concatenate, sets, add, remove
+            append, keys, values, type, format, sys, datetime, random, if/elif/else, bool, isinstance, for loop, while loop, enumerate, count, sort, lambda function
+''' 
+#===================================================================
 
 myDog = 'Albert'
 myCat = 'Zuli'

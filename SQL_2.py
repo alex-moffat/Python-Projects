@@ -98,9 +98,9 @@ sFiles = "INSERT INTO files (fName) VALUES (?)"
 #=================================================
 def step162():
     #===== Create database
-    #dbConnect('test_2.db')
+    dbConnect('test_2.db')
     #===== Create table
-    #sqlExecute('test_2.db', sCreateFiles)
+    sqlExecute('test_2.db', sCreateFiles)
     #===== Find .txt files from list/tuple --> add to new list
     txtList = []
     for f in fileList:

@@ -37,7 +37,6 @@ class cat(pet):
         self.playTime = iPlayTime
         self.napTime = iNapTime
 
-
 #===== INSTANTIATE - pet objects
 def createObjects():
     global petList
@@ -68,7 +67,7 @@ def printObjects():
             pString += '- {name} wants to play at {playTime} and nap at {napTime} each day.\n'.format(name = p.name, playTime = p.playTime, napTime = p.napTime)
     print(pString)
 
-    
+#===== MAIN - script to run   
 if __name__ == '__main__':
     createObjects()
     printObjects()

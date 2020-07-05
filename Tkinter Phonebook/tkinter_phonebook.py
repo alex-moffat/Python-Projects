@@ -184,7 +184,7 @@ def checkFormat(fName, lName, phone, email):
     elif not "@" or not "." in email: #===== email format
         msg = "Incorrect email format"
     elif len(phone) != 10: #===== phone 10 digits
-        msg = "Phone number must exactly 10 digits"
+        msg = "Phone number must have exactly 10 digits"
     else: #===== phone numbers only
         try: 
             int(phone)

@@ -4,7 +4,7 @@
 """
 TAGS:
  SQL, sqlite3.version, error handling, connect, cursor, execute, CREATE, INSERT, SELECT
- slice, upper, fetchall
+ slice, upper, fetchall, isinstance, ValueError as 
 """
 # ============================================================================
 
@@ -31,23 +31,31 @@ def dbUse(db):
         print("DB Connection Error: {}".format(e))        
     return conn
 
-#========== EXECUTE - can pass SQL statement
+#========== EXECUTE - pass database and a non-parameterized SQL statement
 def sqlExecute(db, statement):
     conn = dbUse(db)
     if conn != None: #===== EXECUTE 
         try:
             cur = conn.cursor() # creates cursor object 'cur'
             cur.execute(statement)
-            if statement[slice(0,6)].upper() == 'SELECT': #===== SELECT
+            switch = statement[slice(0,6)].upper()
+            if switch == 'SELECT': #===== SELECT
                 dataset = cur.fetchall()
                 if conn: conn.close()
                 return dataset
-            elif statement[slice(0,6)].upper() == 'UPDATE': #===== UPDATE
+            else:
                 conn.commit()
-                print(cur.rowcount, " record updated.")
-            elif statement[slice(0,6)].upper() == 'DELETE': #===== DELETE
-                conn.commit()
-                print(cur.rowcount, " record deleted.")
+                r = "record"
+                if cur.rowcount > 1: r = "records"
+                if switch == 'UPDATE': #===== UPDATE
+                    printStr = "{} {} updated in database {}".format(cur.rowcount, r, db)
+                elif switch == 'DELETE': #===== DELETE
+                    printStr = "{} {} deleted in database {}".format(cur.rowcount, r, db)                    
+                elif switch == 'INSERT': #===== INSERT
+                    printStr = "{} {} inserted in database {}".format(cur.rowcount, r, db)
+                else:
+                    printStr = "Execute complete in database {}".format(db)
+                print(printStr)
         except ValueError as e:
             print("DB Execute Error: {}".format(e))
         finally:

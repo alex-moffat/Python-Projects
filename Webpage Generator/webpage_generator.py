@@ -19,7 +19,9 @@ wamoffat4@gmail.com\n
 
 #===== TAGS
 """
- datetime, now, deltatime, total_seconds, open, write, close
+ datetime, now, deltatime, total_seconds, open, write, close, tkinter, Text, Button, grid,
+ delete, insert, isinstance, destroy, lambda, title, iconbitmap, Tk(), row, column, resizeable,
+ config, padx, pady, sticky,columnspan
 """
 #=============================================================================
 

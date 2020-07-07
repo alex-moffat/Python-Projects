@@ -1,0 +1,79 @@
+/* ----------------------------------- HEADERS ---------------- */
+/* ----- Section ------ */
+section {
+	margin-left: 10px;
+}
+/* ----- Header 1 ----- */
+h1 {
+	color: ghostwhite;
+	background: darkslateblue; 
+	font-family: Arial;
+	font-Size: 150%;
+	font-weight: normal;
+	font-style: normal;
+	text-align: center;
+	text-decoration: underline;
+}
+/* ----- Header 2 ----- */
+h2 {
+	color: darkslateblue;
+	font-family: Arial;
+	font-Size: 120%;
+	font-weight: bold;
+	text-align: left;
+	text-decoration: underline;
+}
+/* ----------------------------------- LISTS ---------------- */
+/* ----- Ordered Lists ----- */
+ol {
+	list-style-type: lower-roman;
+}
+/* ----- Unordered Lists ----- */
+ul {
+	list-style-type:circle;
+}
+/* ----------------------------------- TABLES ---------------- */
+/* ----- Entire Table ----- */
+table {
+	border: 2px solid darkslateblue;
+	width: 100%;
+}
+/* ----- Table Body ----- */
+th,td {
+	border: 1px solid lavender;
+	font-family: Arial;
+	padding: 5px;
+	text-align: center;
+}
+
+/* ----- HOVER Individual Table Data Cells ----- */
+td:hover {
+	background-color: moccasin;
+	color: tomato;
+	font-weight: bold;
+}
+/* ----- Table Header ----- */
+th {
+	background-color: darkslateblue;
+	color: lavender;
+	padding: 15px;	
+}
+/* ----- Table Rows ----- */
+tr {
+	background-color: Ghostwhite;
+	color: black;
+}
+/* ----- Table Zebra Rows ----- */
+tr:nth-child(even) {
+	background-color: white;	
+}
+/* ----------------------------------- Class Fonts ---------------- */
+.shadowFont {
+	color: darkRed;
+	font-size: 500%;
+	font-family: Georgia;
+	font-weight: normal;
+	text-align: center;
+	font-style: normal;
+	text-shadow: -5px 5px 10px LightCoral;
+}

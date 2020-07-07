@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Basic_HTML_4</title>
+		<meta charset="utf-8">
+		<!-- I was told that it is good practice to put style tags in the head -->
+		<style>
+		.font_1 {
+			background-color: black;
+			color: yellow;
+			font-size: large;
+			}
+		.font_2 {
+			background-color: darkblue;
+			color: white;
+			font-size: medium;
+			}
+		.wildFont {
+			background: mintCream;
+			color: darkSeaGreen;
+			font-size: 300%;
+			font-family: Papyrus;
+			font-weight: 300;
+			text-decoration: underline overline;
+			text-align: center;
+			font-style: italic;
+			}
+		</style>		
+	</head>
+	<body>
+		<header>
+			<h1>Basic HTML 4</h1>			
+		</header>
+		<main>
+			<h2 class="font_1">This h2 element is styled per class attribute .font_1</h2>
+			<h3 class="font_2">This h3 element is styled per class attribute .font_2</h3>
+			<h4 class="font_1">Even thouth this is a h4 element is styled the same as the h2 element above because we pointed to the class attribute .font_1</h4>
+			<!-- experiment -->
+			<h2>This h2 element is not styled with a class attribute</h2>
+			<h3>This h3 element is not styled with a class attribute</h3>
+			<h4>This h4 element is not styled with a class attribute</h4>
+			<p class="wildFont">This paragraph is written in my custom WildFont!</p>
+		</main>
+	</body>
+</html>

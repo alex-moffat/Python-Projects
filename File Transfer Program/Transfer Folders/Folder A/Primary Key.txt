@@ -1,0 +1,16 @@
+A table can have one primary key,
+it should be unique for each row.
+On one or many columns it might be,
+two a composite key you know.
+
+A row can be identified by it,
+a telephone number of kind.
+A fine way to get data I admit,
+the correct data it will find.
+
+A primary key must never be null,
+it's there so it must be legit.
+A modest integer field might seem dull,
+but I don't see a better fit.
+
+-SpaceJoe

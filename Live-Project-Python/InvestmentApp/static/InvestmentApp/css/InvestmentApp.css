@@ -1,0 +1,142 @@
+/*========================================
+                TYPE
+=========================================*/
+html {
+    scroll-behavior: smooth;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+    font-family: 'Public Sans', sans-serif;
+    font-size: 1rem;
+    margin: 0;
+    background-image: linear-gradient(#343a40, #929fab);
+}
+
+footer {
+    font-family: 'Public Sans', sans-serif;
+    position: fixed; /* This fixes picture to the page  */
+    bottom:0;
+    width: 100vw;
+}
+
+nav {
+    font-family: 'Public Sans', sans-serif;
+}
+
+a {
+    text-decoration: none;
+}
+
+section {
+    background-color: white;
+}
+
+table {
+    font-size: calc(0.50em + 0.40vw);
+}
+
+.media img {
+    border-radius: 8px;
+    width: 100px;
+}
+
+/*========================================
+                BASE
+=========================================*/
+.header-container {
+    position: relative;
+}
+
+.header-container img {
+    z-index: -1; /* Image behind everything else */
+    width: 100%;
+    object-fit: cover;
+}
+
+.header-container .container{
+    position: absolute;
+    top: 15vh;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+.header-banner {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+/*========================================
+                HOME
+=========================================*/
+
+/*===== IMAGE =====*/
+.header-home {
+    filter: grayscale(10%);
+    filter: saturation(90%);
+    min-height: 800px;
+}
+
+/*========================================
+                CREATE
+=========================================*/
+
+/*===== IMAGE =====*/
+.header-create {
+    filter: grayscale(20%);
+    filter: saturation(80%);
+    filter: blur(1px);
+    min-height: 800px;
+}
+
+/*========================================
+                PORTFOLIO
+=========================================*/
+
+/*===== IMAGE =====*/
+.header-portfolio {
+    filter: grayscale(10%);
+    filter: saturation(90%);
+    min-height: 600px;
+}
+
+/*===== CLICK-CELL - used to make the entire table cell clickable, use in combination with overflow hidden */
+.click-cell {
+    overflow: hidden;
+}
+.click-cell a {
+    display: block;
+    margin: -100px;
+    padding: 100px;
+    text-decoration: none;
+    color: inherit;
+    height: 100%;
+}
+.click-cell:hover {
+    cursor: pointer;
+}
+
+/*========================================
+                STOCK DETAIL
+=========================================*/
+
+/*===== IMAGE =====*/
+.header-stock {
+    filter: grayscale(10%);
+    filter: saturation(90%);
+    min-height: 600px;
+}
+
+/*========================================
+                TRADE DETAIL
+=========================================*/
+
+/*===== IMAGE =====*/
+.header-trade {
+    filter: grayscale(10%);
+    filter: saturation(90%);
+    filter: blur(1px);
+    min-height: 600px;
+}

@@ -1,0 +1,28 @@
+{% extends 'InvestmentApp/InvestmentApp_base.html' %}
+{% load staticfiles %}
+
+<!--========== HEAD ==========-->
+{% block title %}InvestmentApp{% endblock %}
+
+<!--========== HEADER ==========-->
+{% block header-img-css %}header-home{% endblock %}
+{% block header-img %}{% static 'InvestmentApp/img/wallstreet_bull_1920.jpg' %}{% endblock %}
+{% block page-title %}Stock Portfolio Tracker{% endblock %}
+{% block page-subtitle %}Research &nbsp; | &nbsp; Invest &nbsp; | &nbsp; Grow{% endblock %}
+{% block page-description %}Keep track of your investment portfolio as well as get recent news and research for stocks and mutual funds.{% endblock %}
+<!-- Buttons -->
+{% block header-button1 %}<a class="mt-3 mx-2 btn btn-outline-light btn-lg" data-toggle="tooltip" data-placement="bottom" title="View an index of all tracked stocks" href="{% url 'InvestPortfolio' %}" role="button">Portfolio</a>{% endblock %}
+{% block header-button2 %}<a class="mt-3 mx-2 btn btn-outline-light btn-lg" data-toggle="tooltip" data-placement="bottom" title="Add a stock or trade to track" href="{% url 'InvestCreate' %}" role="button">Add Tracker</a>{% endblock %}
+{% block header-button3 %}<a class="mt-3 mx-2 btn btn-outline-light btn-lg" data-toggle="tooltip" data-placement="bottom" title="View research for stocks you are tracking" href="#" role="button">Research</a>{% endblock %}
+{% block header-button4 %}<a class="mt-3 mx-2 btn btn-outline-light btn-lg" data-toggle="tooltip" data-placement="bottom" title="The latest news stories for the entire market" href="#" role="button">News</a>{% endblock %}
+{% block header-button5 %}{% endblock %}
+
+<!--========== NAVBAR active page ==========-->
+{% block active1 %}active{% endblock %}
+{% block active2 %}{% endblock %}
+{% block active3 %}{% endblock %}
+{% block active4 %}{% endblock %}
+{% block active5 %}{% endblock %}
+
+<!--========== MAIN CONTENT ==========-->
+{% block main %}{% endblock %}

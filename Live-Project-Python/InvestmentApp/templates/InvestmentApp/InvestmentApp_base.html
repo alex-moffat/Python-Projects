@@ -1,0 +1,100 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <!--========================================
+                HEAD
+    =========================================-->
+    <head>
+        <!-- META TAGS -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="InvestmentApp is designed to keep track of your investment portfolio as well as get recent news and research for stocks and mutual funds.">
+        <meta name="keywords" content="HTML, CSS, JavaScript, XML, Bootstrap, SQL, Python, Django, Alex Moffat">
+        <meta name="author" content="Alex Moffat">
+        <!-- TITLE & TAB -->
+        <title>{% block title %}Python Live Project{% endblock %}</title>
+        <link rel="icon" href="{% block tab-icon %}{% static 'InvestmentApp/img/logo/bull_icon_light.ico' %}{% endblock %}">
+        <!-- Fonts -->
+        <link href='https://fonts.googleapis.com/css?family=Public Sans:200,400,600,800' rel='stylesheet'/>
+        <!-- External css -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <!-- Internal stylesheet -->
+        <link rel="stylesheet" type="text/css" href="{% static 'InvestmentApp/css/InvestmentApp.css' %}" />
+    </head>
+    <!--========================================
+                BODY
+    =========================================-->
+    <body>
+        <!--========== NAV ==========-->
+        <nav class="sticky-top navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="{% url 'InvestHome' %}">
+                <img src="{% block app-icon %}{% static 'InvestmentApp/img/logo/bull_icon_light.ico' %}{% endblock %}" width="30" height="30" class="d-inline-block align-top" alt="InvestmentApp-Logo" loading="lazy">
+                InvestmentApp
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-link {% block active1 %}{% endblock %}" href="{% url 'InvestHome' %}">Home</a>
+                    <a class="nav-link {% block active2 %}{% endblock %}" href="{% url 'InvestPortfolio' %}">Portfolio</a>
+                    <a class="nav-link {% block active3 %}{% endblock %}" href="{% url 'InvestCreate' %}">Tracker</a>
+                    <a class="nav-link {% block active4 %}{% endblock %}" href="#">Research</a>
+                    <a class="nav-link {% block active5 %}{% endblock %}" href="#">News</a>
+                    <a class="nav-link" href="{% url 'home' %}">AppBuilder</a>
+                </div>
+            </div>
+        </nav>
+
+        <!--========== HEADER ==========-->
+        <header>
+            {% block header %}
+            <div class="header-container">
+                <img class="{% block header-img-css %}{% endblock %}" src="{% block header-img %}{% endblock %}" alt="header-img">
+                <div class="container">
+                    <div class="header-banner jumbotron text-center text-white">
+                        <h1 class="display-4">{% block page-title %}{% endblock %}</h1>
+                        <p class="lead font-weight-bold">{% block page-subtitle %}{% endblock %}</p>
+                        {% block header-line %}<hr class="my-4 bg-white">{% endblock %}
+                        <p>{% block page-description %}{% endblock %}</p>
+                        <p class="lead">
+                            {% block header-button1 %}{% endblock %}
+                            {% block header-button2 %}{% endblock %}
+                            {% block header-button3 %}{% endblock %}
+                            {% block header-button4 %}{% endblock %}
+                            {% block header-button5 %}{% endblock %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endblock %}
+        </header>
+
+        <!--========== MAIN ==========-->
+        <main class="pb-5">
+            {% block main %}{% endblock %}
+        </main>
+
+        <!--========== FOOTER ==========-->
+        <footer class="bg-secondary my-0 py-3 text-center">
+            <div class="container">
+                <span class="text-white"><a class="text-white" href="https://a-moffat.com/">Alex Moffat</a> &nbsp; | &nbsp; &copy; {% now 'Y' %}</span>
+            </div>
+        </footer>
+
+        <!--========== SCRIPT - jQuery first, then Popper.js, then Bootstrap JS ==========-->
+        {% block javascript %}
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+        <!-- Used for tooltip style -->
+        <script type="text/javascript">
+        $(document).ready(function() {
+            $("body").tooltip({ selector: '[data-toggle=tooltip]', delay: {show: 1000, hide: 200}});
+        });
+        </script>
+        {% endblock %}
+    </body>
+</html>

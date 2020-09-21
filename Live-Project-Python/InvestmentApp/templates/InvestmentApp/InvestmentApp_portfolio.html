@@ -1,0 +1,113 @@
+{% extends 'InvestmentApp/InvestmentApp_base.html' %}
+{% load staticfiles %}
+
+<!--========== HEAD ==========-->
+{% block title %}InvestmentApp | Portfolio{% endblock %}
+
+<!--========== HEADER ==========-->
+{% block header-img-css %}header-portfolio{% endblock %}
+{% block header-img %}{% static 'InvestmentApp/img/Incline_street_1920_wide.jpg' %}{% endblock %}
+{% block page-title %}Portfolio{% endblock %}
+{% block page-subtitle %}{% endblock %}
+{% block page-description %}{% endblock %}
+<!-- Buttons -->
+{% block header-button1 %}<a class="mt-3 mx-2 btn btn-outline-light btn-lg" data-toggle="tooltip" data-placement="bottom" title="View all your tracked stocks on the watch list" href="#stock-table" role="button">Stocks</a>{% endblock %}
+{% block header-button2 %}<a class="mt-3 mx-2 btn btn-outline-light btn-lg" data-toggle="tooltip" data-placement="bottom" title="View all your tracked stocks/fund transactions" href="#trade-table" role="button">Trades</a>{% endblock %}
+{% block header-button3 %}{% endblock %}
+{% block header-button4 %}{% endblock %}
+{% block header-button5 %}{% endblock %}
+
+<!--========== NAVBAR active page ==========-->
+{% block active1 %}{% endblock %}
+{% block active2 %}active{% endblock %}
+{% block active3 %}{% endblock %}
+{% block active4 %}{% endblock %}
+{% block active5 %}{% endblock %}
+
+<!--========== MAIN CONTENT ==========-->
+{% block main %}
+
+    <!--===== STOCK TABLE =====-->
+    <div class="container mt-5">
+        <div id="stock-table" class="card shadow">
+            <div class="card-header text-center">
+                <h4 class="font-weight-bold">Stock Watchlist</h4>
+            </div>
+            <div class="card-body">
+                <div class="card-text mb-4">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">Symbol</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Website</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for object in stocks %}
+                                    <tr>
+                                        <th class="click-cell" scope="row"><a href="{% url 'StockDetail' pk=object.id %}">{{ object.symbol }}</a></th>
+                                        <td class="click-cell"><a href="{% url 'StockDetail' pk=object.id %}">{{ object.name }}</a></td>
+                                        <td class="click-cell"><a href="{% url 'StockDetail' pk=object.id %}">{{ object.get_category_display }}</a></td>
+                                        <!--===== ANCHOR - create anchor tag only if website link =====-->
+                                        {% if object.link is not None %}
+                                            <td><a target="_blank" href="{{ object.link }}"><small>{{ object.link }}</small></a></td>
+                                        {% else %}
+                                            <td class="click-cell"><a href="{% url 'StockDetail' pk=object.id %}"></a>{{ object.link }}</td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--===== BUTTON - link to create new tracker=====-->
+                <a name="stockCreate" href="{% url 'InvestCreate' %}" class="btn btn-secondary shadow">Add New Stock Tracker</a>
+            </div>
+        </div>
+    </div>
+
+    <!--===== TRADE TABLE =====-->
+    <div class="container my-5">
+        <div id="trade-table" class="card shadow">
+            <div class="card-header text-center">
+                <h4 class="font-weight-bold">Trade List</h4>
+            </div>
+            <div class="card-body">
+                <div class="card-text mb-4">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">Stock</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Open</th>
+                                    <th scope="col">Open Cost</th>
+                                    <th scope="col">Close</th>
+                                    <th scope="col">Close Cost</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for trade in trades %}
+                                    <tr>
+                                        <th class="click-cell" scope="row"><a href="{% url 'TradeDetail' pk=trade.id %}">{{ trade.stock }}</a></th>
+                                        <td class="click-cell"><a href="{% url 'TradeDetail' pk=trade.id %}">{{ trade.quantity }}</a></td>
+                                        <td class="click-cell"><a href="{% url 'TradeDetail' pk=trade.id %}">{{ trade.open }}</a></td>
+                                        <td class="click-cell"><a href="{% url 'TradeDetail' pk=trade.id %}">{{ trade.open_cost }}</a></td>
+                                        <td class="click-cell"><a href="{% url 'TradeDetail' pk=trade.id %}">{{ trade.close }}</a></td>
+                                        <td class="click-cell"><a href="{% url 'TradeDetail' pk=trade.id %}">{{ trade.close_cost }}</a></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--===== BUTTON - link to create new tracker=====-->
+                <a name="tradeCreate" href="{% url 'InvestCreate' %}" class="btn btn-secondary shadow">Add New Trade Tracker</a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,6 +1,6 @@
 # Python-Projects
 
-Python modules and solutions. Most projects were completed in about 2 hours except two: The "Live-Project" was a two-week project to create a Python/dJango dynamic and fully reactive investment portfolio traker website from scratch. The "Phonebook Demo" was a four-day project to create a tKinter contact list interface with database with export features.   
+Python modules and solutions. Most projects were completed in about 2 hours except two: The "Live-Project" was a two-week project to create a Python/Django dynamic and fully reactive investment portfolio traker website from scratch. The "Phonebook Demo" was a four-day project to create a tKinter contact list interface with database with export features.   
 
 ## CONTENTS
 - [Webpage Generator](#webpage-generator)

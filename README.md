@@ -491,7 +491,7 @@ class TradeForm(ModelForm):
 {% block main %}{% endblock %}
 ```
 
-## Story 2: Create Page
+## Story 2: Create
 
 ### Commit
 - Create two linked models and add a migration
@@ -603,7 +603,7 @@ class TradeForm(ModelForm):
 {% endblock %}
 ```
 
-## Story 3: Index Page
+## Story 3: Index
 
 ### Commit
 -	Create index page that is linked from home page

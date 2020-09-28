@@ -8,7 +8,7 @@ Python modules and solutions. Most projects were completed in about 2 hours exce
   2. [Story 2: Create](#story-2-create)
   3. [Story 3: Index Page](#story-3-index)
   4. [Story 4: Detail Pages](#story-4-details)
-  5. [Story 5: Edit Pages](#story-4-edits)
+  5. [Story 5: Edit Pages](#story-5-edits)
 - [Webpage Generator](#webpage-generator)
 
 ## Django Project
@@ -27,7 +27,7 @@ The Investment Portfolio Tracker is a web application designed to keep track of 
 2. [Story 2: Create](#story-2-create)
 3. [Story 3: Index Page](#story-3-index)
 4. [Story 4: Detail Pages](#story-4-details)
-5. [Story 5: Edit Pages](#story-4-edits)
+5. [Story 5: Edit Pages](#story-5-edits)
 
 ### Views
 ```python
@@ -712,7 +712,7 @@ class TradeForm(ModelForm):
 {% endblock %}
 ```
 
-## Story 4: Details/Edit
+## Story 4: Details
 
 ### Commit
 -	Add two details templates to the template folder, register the url pattern 

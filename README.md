@@ -3,7 +3,38 @@
 Python modules and solutions. Most projects were completed in about 2 hours except two: The "Live-Project" was a two-week project to create a Python/Django dynamic and fully reactive investment portfolio traker website from scratch. The "Phonebook Demo" was a four-day project to create a tKinter contact list interface with database with export features.   
 
 ## CONTENTS
+- [Django Project: Investment Portfolio Tracker](#django-project)  
+  1. [Story 1: Setup](#story-1-setup)
 - [Webpage Generator](#webpage-generator)
+
+## Django Project
+During this two-week project I built a simple database driven fully functioning Django website with special attention placed on custom Boostrap styling and mobile friendly responsive webpages. This application was designed as a standalone website, but also resided in a larger web application with interactions to an existing codebase.     
+
+### Description
+The Investment Portfolio Tracker is a web application designed to keep track of your investment portfolio profit and loss. Users have CRUD functionality for stock/mutual/index and/or trade trackers. The interface provides cross-reference data for all trades related to stocks that are tracked. The stock and trade tracker index pages allow details access and easy updates.  
+
+### Stories
+1. [Story 1: Setup](#story-1-setup)
+
+## Story 1: Setup
+
+### Commit
+- Version control with team on larger app
+-	Create new app using manage.py startapp
+-	Register app from within MainProject>MainProject>settings.py
+-	Create base and home templates in a new template folder
+-	Add function to views to render the home page
+-	Register urls with MainApp and create urls.py for your app and homepage
+-	Link app home page to the main home page by adding an image on the main home page.
+-	Customize Navigation bar and footer
+-	Add logo to tab and navigation bar
+-	Add homepage content: title, subtitle, description, image, with basic styling.
+-	Add responsive styling to Home page and base templates.
+
+### Interface
+![alt text](https://github.com/alex-moffat/Python-Projects/blob/master/Webpage%20Generator/Screenshot_webpage_generator.jpg "Webpage_Generator")
+
+### Code
 
 ## Webpage Generator
 

@@ -1,6 +1,6 @@
 # PYTHON: 3.8.2
 # AUTHOR: Alex Moffat
-# PURPOSE: The Tech Academy Bootcamp - File Transfer Assignment
+# PURPOSE: File Transfer Demo
 #=============================================================================
 description = """
 This program was written by Alex Moffat.\n
@@ -87,6 +87,7 @@ def createGUI():
     b4.grid(row=2, column=1, padx=(10,10), pady=(0,20), sticky=W)
     b5.grid(row=2, column=3, padx=(10,20), pady=(0,20), sticky=E)
     sTime('createGUI') # script timer
+    win.mainloop()
     
 #========== GET DIR - tkinter askdirectory, invoke dialog modal, get folder path from user, place folderpath into Entry widget
 def getDir(obj):

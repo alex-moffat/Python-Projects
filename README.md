@@ -8,23 +8,339 @@ Python modules and solutions. Most projects were completed in about 2 hours exce
 - [Webpage Generator](#webpage-generator)
 
 ## Django Project
-During this two-week project I built a simple database driven fully functioning Django website with special attention placed on custom Boostrap styling and mobile friendly responsive webpages. This application was designed as a standalone website, but also resided in a larger web application with interactions to an existing codebase.     
+During this two-week project I built a simple database driven fully functioning Django website with special attention placed on custom Boostrap styling and mobile friendly responsive webpages. This application was designed as a standalone website, but also resided in a larger web application with interactions to an existing codebase that had continuous contribution from 5 other programmers.     
 
 ### Description
-The Investment Portfolio Tracker is a web application designed to keep track of your investment portfolio profit and loss. Users have CRUD functionality for stock/mutual/index and/or trade trackers. The interface provides cross-reference data for all trades related to stocks that are tracked. The stock and trade tracker index pages allow details access and easy updates.  
+The Investment Portfolio Tracker is a web application designed to keep track of your investment portfolio profit and loss. Users have CRUD functionality for stock/mutual/index and/or trade trackers. The interface provides cross-reference data for all trades related to stocks that are tracked. The stock and trade tracker index pages allow details access and easy updates.
+
+### Backend
+- [Views](#views)
+- [Models](#models)
+- [Forms](#forms)
 
 ### Stories
 1. [Story 1: Setup](#story-1-setup)
+
+### Views
+```python
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from .models import Trade, Stock
+from .forms import *
+
+# ===== HOME
+def investHome(request):
+    return render(request, 'InvestmentApp/InvestmentApp_home.html')
+
+
+# ========== PORTFOLIO
+def investPortfolio(request):
+    stocks = Stock.objects.all()
+    trades = Trade.objects.all()
+    return render(request, 'InvestmentApp/InvestmentApp_portfolio.html', {'stocks': stocks, 'trades': trades})
+
+
+# ========== STOCK CREATE - Blank create form
+def investCreate(request):
+    stock_form = StockForm()
+    trade_form = TradeForm()
+    return render(request, 'InvestmentApp/InvestmentApp_create.html',
+                  {'stock_form': stock_form, 'trade_form': trade_form})
+
+
+# ========== STOCK CREATE - Stock Form
+def stockCreate(request):
+    # ===== STOCK FORM
+    if request.method == 'POST':
+        # ----- create a form instance and populate it with data from the request
+        stock_form = StockForm(request.POST)
+        # check whether it's valid
+        if stock_form.is_valid():
+            # process the data in form.cleaned_data as required
+            stock_form.save()
+            # create message for display - using extra_tag to direct message to a specific message element on html page
+            messages.success(request, 'Stock Tracker Successfully Added', extra_tags='stock')
+            # redirect to same URL with message - use ID reference at that end of the URL for positioning
+            return redirect('/InvestmentApp/create/#stock-form')
+        else:
+            # create message for display - using extra_tag to direct message to a specific message element on html page - use ID reference at that end of the URL for positioning
+            print(stock_form.errors)
+            messages.warning(request, 'Please correct errors in stock form', extra_tags='stock')
+            return redirect('/InvestmentApp/create/#stock-form')
+    # ===== GET (or any other method) create a blank form
+    else:
+        stock_form = StockForm()
+        trade_form = TradeForm()
+    return render(request, 'InvestmentApp/InvestmentApp_create.html',
+                  {'stock_form': stock_form, 'trade_form': trade_form})
+
+
+# ========== TRADE CREATE - Trade Form
+def tradeCreate(request):
+    # ===== TRADE FORM
+    if request.method == 'POST':
+        # ----- create a form instance and populate it with data from the request
+        trade_form = TradeForm(request.POST)
+        # check whether it's valid
+        if trade_form.is_valid():
+            # process the data in form.cleaned_data as required
+            trade_form.save()
+            # create message for display - using extra_tag to direct message to a specific message element on html page
+            messages.success(request, 'Trade Tracker Successfully Added', extra_tags='trade')
+            # redirect to same URL with message - use ID reference at that end of the URL for positioning
+            return redirect('/InvestmentApp/create/#trade-form')
+        else:
+            # create message for display - using extra_tag to direct message to a specific message element on html page - use ID reference at that end of the URL for positioning
+            print(trade_form.errors)
+            messages.warning(request, 'Please correct errors in trade form', extra_tags='trade')
+            return redirect('/InvestmentApp/create/#trade-form')
+    # ===== GET (or any other method) create a blank form
+    else:
+        stock_form = StockForm()
+        trade_form = TradeForm()
+    return render(request, 'InvestmentApp/InvestmentApp_create.html',
+                  {'stock_form': stock_form, 'trade_form': trade_form})
+
+
+# ========== STOCK DETAIL
+def stockDetail(request, pk):
+    pk = int(pk)
+    # ===== Get the requested item from the model
+    stock = Stock.objects.get(id=pk)
+    # ===== Get all trades recorded to requested stock
+    trades = stock.trade_set.all()
+    trade_count = trades.count()
+    # ===== Create form that is populated with requested item
+    stock_instance = get_object_or_404(Stock, pk=pk)
+    stock_form = StockForm(data=request.POST or None, instance=stock_instance)  # NOTE - the "or None" is required
+    return render(request, 'InvestmentApp/InvestmentApp_stock.html',
+                  {'stock': stock, 'trades': trades, 'stock_form': stock_form, 'trade_count': trade_count})
+
+
+# ========== STOCK UPDATE
+def stockUpdate(request, pk):
+    pk = int(pk)
+    # ===== Create form that is populated with requested item
+    stock_instance = get_object_or_404(Stock, pk=pk)
+    stock_form = StockForm(data=request.POST, instance=stock_instance)  # NOTE - the "or None" is required
+    if stock_form.is_valid():
+        stock_form.save()
+        messages.success(request, 'Update Successful', extra_tags='stock')
+    else:
+        print(stock_form.errors)
+        messages.warning(request, 'Update Failed', extra_tags='stock')
+    return redirect('StockDetail', pk)
+
+
+# ========== DELETE STOCK
+def deleteStock(request, pk):
+    pk = int(pk)
+    instance = get_object_or_404(Stock, pk=pk)
+    instance.delete()
+    return redirect('InvestPortfolio')
+
+
+# ========== TRADE DETAIL
+def tradeDetail(request, pk):
+    pk = int(pk)
+    trade = Trade.objects.get(id=pk)  # Get the requested item from the model
+    stock = trade.stock
+    # ===== Create form that is populated with requested item
+    trade_instance = get_object_or_404(Trade, pk=pk)
+    trade_form = TradeForm(data=request.POST or None, instance=trade_instance)  # NOTE - the "or None" is required
+    return render(request, 'InvestmentApp/InvestmentApp_trade.html', {'trade': trade, 'stock': stock, 'trade_form': trade_form})
+
+
+# ========== TRADE UPDATE
+def tradeUpdate(request, pk):
+    pk = int(pk)
+    # ===== Create form that is populated with requested item
+    trade_instance = get_object_or_404(Trade, pk=pk)
+    trade_form = TradeForm(data=request.POST, instance=trade_instance)  # NOTE - the "or None" is required
+    if trade_form.is_valid():
+        trade_form.save()
+        messages.success(request, 'Update Successful', extra_tags='trade')
+    else:
+        print(trade_form.errors)
+        messages.warning(request, 'Update Failed', extra_tags='trade')
+    return redirect('TradeDetail', pk)
+
+
+# ========== DELETE TRADE
+def deleteTrade(request, pk):
+    pk = int(pk)
+    instance = get_object_or_404(Trade, pk=pk)
+    instance.delete()
+    return redirect('InvestPortfolio')
+```
+
+### Models
+```python
+from django.core.validators import MinValueValidator, URLValidator
+from django.db import models
+from datetime import datetime
+
+
+# ========== STOCK
+
+class Stock(models.Model):
+    SS = 'S'
+    MF = 'M'
+    IF = 'I'
+    ET = 'E'
+    CATEGORY_CHOICES = [
+        (SS, 'Stock'),
+        (MF, 'Mutual Fund'),
+        (IF, 'Index Fund'),
+        (ET, 'ETF'),
+    ]
+
+    symbol = models.CharField("Symbol", max_length=5, null=False)
+    name = models.CharField("Name", max_length=50, default="", null=False)
+    category = models.CharField("Category", max_length=1, choices=CATEGORY_CHOICES, default=SS)
+    link = models.CharField("Website", max_length=200, default="", blank=True, null=True, validators=[URLValidator])
+    notes = models.TextField("Notes", max_length=300, default="", blank=True, null=True)
+    cat_name = {
+            'S': 'Stock',
+            'M': 'Mutual Fund',
+            'I': 'Index Fund',
+            'E': 'ETF'
+        }
+
+    class Meta:
+        ordering = ["name"]
+        verbose_name_plural = "Stocks"
+
+    def __str__(self):
+        return self.name
+
+
+# ========== TRADE
+class Trade(models.Model):
+    stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
+    open = models.DateField("Open Date", default=datetime.now)
+    quantity = models.PositiveIntegerField("Quantity", default=1, validators=[MinValueValidator(1)])
+    open_cost = models.DecimalField("Open/Share", max_digits=7, decimal_places=2, default=0,
+                                    validators=[MinValueValidator(0.01)])
+    close = models.DateField("Close Date", null=True, blank=True)
+    close_cost = models.DecimalField("Close/Share", max_digits=7, decimal_places=2, null=True, blank=True,
+                                     validators=[MinValueValidator(0.00)])
+    paper = models.BooleanField("Paper Trade", default=False)
+
+    @property
+    def total_open(self):
+        return "${:,}".format(self.quantity * self.open_cost)
+
+    @property
+    def total_close(self):
+        if self.close and self.close_cost is not None:
+            return "${:,}".format(self.quantity * self.close_cost)
+        else:
+            return 'Still Open'
+
+    @property
+    def gain(self):
+        if self.close and self.close_cost is not None:
+            return "${:,}".format((self.quantity * self.close_cost) - (self.quantity * self.open_cost))
+        else:
+            return 'Still Open'
+
+    @property
+    def percent_gain(self):
+        if self.close and self.close_cost is not None:
+            calc = ((self.quantity * self.close_cost) - (self.quantity * self.open_cost)) / (self.quantity * self.open_cost)
+            return "{:.2%}".format(calc)
+        else:
+            return 'Still Open'
+
+    @property
+    def win(self):
+        if self.close and self.close_cost is not None:
+            if ((self.quantity * self.close_cost) - (self.quantity * self.open_cost)) >= 0:
+                return True
+            else:
+                return False
+        else:
+            return None
+
+    objects = models.Manager()
+
+    class Meta:
+        ordering = ["open"]
+        verbose_name_plural = "Trades"
+
+    def __str__(self):
+        if self.paper:
+            return "{} Paper Trade".format(self.stock.symbol)
+        else:
+            return "{} Trade".format(self.stock.symbol)
+```
+
+### Forms
+```python
+from datetime import datetime
+from django.forms import ModelForm
+from django.forms.widgets import *
+from .models import Stock, Trade
+
+
+# ========== STOCK
+class StockForm(ModelForm):
+    class Meta:
+        model = Stock
+        fields = '__all__'
+        widgets = {
+            'symbol': TextInput(attrs={'class': 'form-control'}),
+            'name': TextInput(attrs={'class': 'form-control'}),
+            'category': Select(attrs={'class': 'form-control'}),
+            'link': TextInput(attrs={'placeholder': 'optional', 'class': 'form-control', 'type': 'url'}),
+            'notes': TextInput(attrs={'placeholder': 'optional', 'class': 'form-control'})
+        }
+
+
+# ========== TRADE
+class TradeForm(ModelForm):
+    class Meta:
+        model = Trade
+        fields = '__all__'
+        widgets = {
+            'stock': Select(attrs={'class': 'form-control'}),
+            'open': DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'quantity': NumberInput(attrs={'class': 'form-control'}),
+            'open_cost': NumberInput(attrs={'class': 'form-control'}),
+            'close': DateInput(attrs={'placeholder': 'optional', 'class': 'form-control', 'type': 'date'}),
+            'close_cost': NumberInput(attrs={'class': 'form-control'}),
+            'paper': CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+
+    # Logic for raising error if close_date < open_date
+    def clean(self):
+        cleaned_data = super().clean()
+        open_date = cleaned_data.get('open')
+        close_date = cleaned_data.get('close')
+        close_cost = cleaned_data.get('close_cost')
+        try:
+            if close_date is not None:
+                if close_date < open_date:
+                    msg = 'Close date should be greater than open date.'
+                    self._errors['close'] = self.error_class([msg])
+                if close_cost is None:
+                    msg = 'Must have a closing cost to close the trade.'
+                    self._errors['close_cost'] = self.error_class([msg])
+        except ValueError:
+            print('Invalid Close date format')
+```
 
 ## Story 1: Setup
 
 ### Commit
 - Version control with team on larger app
--	Create new app using manage.py startapp
--	Register app from within MainProject>MainProject>settings.py
+-	Create new app via startapp
+-	Register app from within MainProject
 -	Create base and home templates in a new template folder
 -	Add function to views to render the home page
--	Register urls with MainApp and create urls.py for your app and homepage
+-	Register urls with MainApp and create urls.py for app and homepage
 -	Link app home page to the main home page by adding an image on the main home page.
 -	Customize Navigation bar and footer
 -	Add logo to tab and navigation bar
@@ -32,9 +348,145 @@ The Investment Portfolio Tracker is a web application designed to keep track of 
 -	Add responsive styling to Home page and base templates.
 
 ### Interface
-![alt text](https://github.com/alex-moffat/Python-Projects/blob/master/Webpage%20Generator/Screenshot_webpage_generator.jpg "Webpage_Generator")
+![alt text](https://github.com/alex-moffat/Python-Projects/blob/master/Live-Project-Python/Screenshot_home_full.jpg "Home_Page_Full")
+![alt text](https://github.com/alex-moffat/Python-Projects/blob/master/Live-Project-Python/Screenshot_home_iphone.jpg "Home_Page_Mobile")
 
-### Code
+### Base
+```HTML
+{% load staticfiles %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <!--========================================
+                HEAD
+    =========================================-->
+    <head>
+        <!-- META TAGS -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="InvestmentApp is designed to keep track of your investment portfolio as well as get recent news and research for stocks and mutual funds.">
+        <meta name="keywords" content="HTML, CSS, JavaScript, XML, Bootstrap, SQL, Python, Django, Alex Moffat">
+        <meta name="author" content="Alex Moffat">
+        <!-- TITLE & TAB -->
+        <title>{% block title %}Python Live Project{% endblock %}</title>
+        <link rel="icon" href="{% block tab-icon %}{% static 'InvestmentApp/img/logo/bull_icon_light.ico' %}{% endblock %}">
+        <!-- Fonts -->
+        <link href='https://fonts.googleapis.com/css?family=Public Sans:200,400,600,800' rel='stylesheet'/>
+        <!-- External css -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <!-- Internal stylesheet -->
+        <link rel="stylesheet" type="text/css" href="{% static 'InvestmentApp/css/InvestmentApp.css' %}" />
+    </head>
+    <!--========================================
+                BODY
+    =========================================-->
+    <body>
+        <!--========== NAV ==========-->
+        <nav class="sticky-top navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="{% url 'InvestHome' %}">
+                <img src="{% block app-icon %}{% static 'InvestmentApp/img/logo/bull_icon_light.ico' %}{% endblock %}" width="30" height="30" class="d-inline-block align-top" alt="InvestmentApp-Logo" loading="lazy">
+                InvestmentApp
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-link {% block active1 %}{% endblock %}" href="{% url 'InvestHome' %}">Home</a>
+                    <a class="nav-link {% block active2 %}{% endblock %}" href="{% url 'InvestPortfolio' %}">Portfolio</a>
+                    <a class="nav-link {% block active3 %}{% endblock %}" href="{% url 'InvestCreate' %}">Tracker</a>
+                    <a class="nav-link {% block active4 %}{% endblock %}" href="#">Research</a>
+                    <a class="nav-link {% block active5 %}{% endblock %}" href="#">News</a>
+                    <a class="nav-link" href="{% url 'home' %}">AppBuilder</a>
+                </div>
+            </div>
+        </nav>
+
+        <!--========== HEADER ==========-->
+        <header>
+            {% block header %}
+            <div class="header-container">
+                <img class="{% block header-img-css %}{% endblock %}" src="{% block header-img %}{% endblock %}" alt="header-img">
+                <div class="container">
+                    <div class="header-banner jumbotron text-center text-white">
+                        <h1 class="display-4">{% block page-title %}{% endblock %}</h1>
+                        <p class="lead font-weight-bold">{% block page-subtitle %}{% endblock %}</p>
+                        {% block header-line %}<hr class="my-4 bg-white">{% endblock %}
+                        <p>{% block page-description %}{% endblock %}</p>
+                        <p class="lead">
+                            {% block header-button1 %}{% endblock %}
+                            {% block header-button2 %}{% endblock %}
+                            {% block header-button3 %}{% endblock %}
+                            {% block header-button4 %}{% endblock %}
+                            {% block header-button5 %}{% endblock %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endblock %}
+        </header>
+
+        <!--========== MAIN ==========-->
+        <main class="pb-5">
+            {% block main %}{% endblock %}
+        </main>
+
+        <!--========== FOOTER ==========-->
+        <footer class="bg-secondary my-0 py-3 text-center">
+            <div class="container">
+                <span class="text-white"><a class="text-white" href="https://a-moffat.com/">Alex Moffat</a> &nbsp; | &nbsp; &copy; {% now 'Y' %}</span>
+            </div>
+        </footer>
+
+        <!--========== SCRIPT - jQuery first, then Popper.js, then Bootstrap JS ==========-->
+        {% block javascript %}
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+        <!-- Used for tooltip style -->
+        <script type="text/javascript">
+        $(document).ready(function() {
+            $("body").tooltip({ selector: '[data-toggle=tooltip]', delay: {show: 1000, hide: 200}});
+        });
+        </script>
+        {% endblock %}
+    </body>
+</html>
+```
+
+### Home
+```HTML
+{% extends 'InvestmentApp/InvestmentApp_base.html' %}
+{% load staticfiles %}
+
+<!--========== HEAD ==========-->
+{% block title %}InvestmentApp{% endblock %}
+
+<!--========== HEADER ==========-->
+{% block header-img-css %}header-home{% endblock %}
+{% block header-img %}{% static 'InvestmentApp/img/wallstreet_bull_1920.jpg' %}{% endblock %}
+{% block page-title %}Stock Portfolio Tracker{% endblock %}
+{% block page-subtitle %}Research &nbsp; | &nbsp; Invest &nbsp; | &nbsp; Grow{% endblock %}
+{% block page-description %}Keep track of your investment portfolio as well as get recent news and research for stocks and mutual funds.{% endblock %}
+<!-- Buttons -->
+{% block header-button1 %}<a class="mt-3 mx-2 btn btn-outline-light btn-lg" data-toggle="tooltip" data-placement="bottom" title="View an index of all tracked stocks" href="{% url 'InvestPortfolio' %}" role="button">Portfolio</a>{% endblock %}
+{% block header-button2 %}<a class="mt-3 mx-2 btn btn-outline-light btn-lg" data-toggle="tooltip" data-placement="bottom" title="Add a stock or trade to track" href="{% url 'InvestCreate' %}" role="button">Add Tracker</a>{% endblock %}
+{% block header-button3 %}<a class="mt-3 mx-2 btn btn-outline-light btn-lg" data-toggle="tooltip" data-placement="bottom" title="View research for stocks you are tracking" href="#" role="button">Research</a>{% endblock %}
+{% block header-button4 %}<a class="mt-3 mx-2 btn btn-outline-light btn-lg" data-toggle="tooltip" data-placement="bottom" title="The latest news stories for the entire market" href="#" role="button">News</a>{% endblock %}
+{% block header-button5 %}{% endblock %}
+
+<!--========== NAVBAR active page ==========-->
+{% block active1 %}active{% endblock %}
+{% block active2 %}{% endblock %}
+{% block active3 %}{% endblock %}
+{% block active4 %}{% endblock %}
+{% block active5 %}{% endblock %}
+
+<!--========== MAIN CONTENT ==========-->
+{% block main %}{% endblock %}
+```
+
 
 ## Webpage Generator
 

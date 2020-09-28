@@ -7,7 +7,8 @@ Python modules and solutions. Most projects were completed in about 2 hours exce
   1. [Story 1: Base/Home](#story-1-base)
   2. [Story 2: Create](#story-2-create)
   3. [Story 3: Index Page](#story-3-index)
-  4. [Story 4: Details Page](#story-4-details)
+  4. [Story 4: Detail Pages](#story-4-details)
+  5. [Story 5: Edit Pages](#story-4-edits)
 - [Webpage Generator](#webpage-generator)
 
 ## Django Project
@@ -25,7 +26,8 @@ The Investment Portfolio Tracker is a web application designed to keep track of 
 1. [Story 1: Base/Home](#story-1-base)
 2. [Story 2: Create](#story-2-create)
 3. [Story 3: Index Page](#story-3-index)
-4. [Story 4: Details Page](#story-4-details)
+4. [Story 4: Detail Pages](#story-4-details)
+5. [Story 5: Edit Pages](#story-4-edits)
 
 ### Views
 ```python
@@ -622,7 +624,6 @@ class TradeForm(ModelForm):
 
 ### Index
 ```HTML
-<!--========== MAIN CONTENT ==========-->
 {% block main %}
 
     <!--===== STOCK TABLE =====-->
@@ -711,7 +712,7 @@ class TradeForm(ModelForm):
 {% endblock %}
 ```
 
-## Story 4: Details
+## Story 4: Details/Edit
 
 ### Commit
 -	Add two details templates to the template folder, register the url pattern 
@@ -729,7 +730,6 @@ class TradeForm(ModelForm):
 
 ### Stock Details
 ```HTML
-<!--========== MAIN CONTENT ==========-->
 {% block main %}
 <!--===== STOCK DETAIL =====-->
 <div class="container my-5">
@@ -896,6 +896,204 @@ class TradeForm(ModelForm):
 {% endblock %}
 ```
 
+## Story 5: Edits
+
+### Commit
+-	Add an edit page to the detail templates for two models
+-	Add tab submenus for detail templates to view relate data from other tables and allow edit
+-	Use model forms and instances to display the content of a single item from the database
+-	Have the views function send the information for the single item and save any changes.
+-	Include the option to delete an item with a confirmation that the user wants to delete.
+-	Use a modal for the delete confirmation message
+-	Add responsive and dynamic styling with image selection based on data from model instance
+
+### Interface
+![alt text](https://github.com/alex-moffat/Python-Projects/blob/master/Live-Project-Python/Screenshot_stock_edit.jpg "Stock_Edit")
+![alt text](https://github.com/alex-moffat/Python-Projects/blob/master/Live-Project-Python/Screenshot_trade_edit.jpg "Trade_Edit")
+
+### Trade Details/Edit
+```HTML
+{% block main %}
+
+<!--===== TRADE DETAIL =====-->
+<div class="container my-5">
+    <div class="card shadow">
+
+        <!--=== CARD HEADER ===-->
+        <div class="card-header">
+            <h4 class="font-weight-bold py-1">{{ trade }}</h4>
+            <!--=== NAV TABS ===-->
+            <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                <!--=== DETAILS ===-->
+                <li class="nav-item">
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Details</a>
+                </li>
+                <!--=== SUMMARY ===-->
+                <li class="nav-item">
+                    <a class="nav-link" id="summary-tab" data-toggle="tab" href="#summary" role="tab" aria-controls="summary" aria-selected="false">Summary</a>
+                </li>
+                <!--=== STOCK ===-->
+                <li class="nav-item">
+                    <a class="nav-link" id="stock-tab" data-toggle="tab" href="#stock" role="tab" aria-controls="stock" aria-selected="false">Stock</a>
+                </li>
+                <!--=== EDIT ===-->
+                <li class="nav-item">
+                    <a class="nav-link" id="edit-tab" data-toggle="tab" href="#edit" role="tab" aria-controls="edit" aria-selected="false">Edit</a>
+                </li>
+            </ul>
+        </div>
+
+        <!--===== CARD BODY / TAB CONTENT =====-->
+        <div class="card-body tab-content" id="myTabContent">
+
+            <!--===== DETAILS TAB =====-->
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <div class="media mt-2">
+                    <img class="thumb mr-3" src="{% if trade.paper %}{% static 'InvestmentApp/img/paper-trade.jpg' %}{% else %}{% static 'InvestmentApp/img/currency.jpg' %}{% endif %}" alt="trade-type">
+                    <div class="media-body">
+                        <h5 class="card-title mb-4">{{ stock.name }}</h5>
+                        <div class="card-text">
+                            <p><span class="font-weight-bold">Open Date:</span><br>{{ trade.open }}</p>
+                            <p><span class="font-weight-bold">Quantity:</span><br>{{ trade.quantity }}</p>
+                            <p><span class="font-weight-bold">Open Cost:</span><br>{{ trade.open_cost }}</p>
+                            <p><span class="font-weight-bold">Close Date:</span><br>{{ trade.close }}</p>
+                            <p><span class="font-weight-bold">Close Cost:</span><br>{{ trade.close_cost }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--===== SUMMARY TAB =====-->
+            <div class="tab-pane fade" id="summary" role="tabpanel" aria-labelledby="summary-tab">
+                <h5 class="card-title mt-2 mb-4">{{ stock.name }}</h5>
+                <div class="card-text">
+                    <p><span class="font-weight-bold">Total Open Cost:</span><br>{{ trade.total_open }}</p>
+                    <p><span class="font-weight-bold">Total Close Cost:</span><br>{{ trade.total_close }}</p>
+                    <!--=== Styling for gain or lose ===-->
+                    {% if trade.win == True %}
+                    <p><span class="font-weight-bold">Total Gain:</span><br><span class="text-success">{{ trade.gain }}</span></p>
+                    <p><span class="font-weight-bold">Percentage Gain:</span><br><span class="text-success">{{ trade.percent_gain }}</span></p>
+                    {% elif trade.win == False  %}
+                    <p><span class="font-weight-bold">Total Gain:</span><br><span class="text-danger">{{ trade.gain }}</span></p>
+                    <p><span class="font-weight-bold">Percentage Gain:</span><br><span class="text-danger">{{ trade.percent_gain }}</span></p>
+                    {% else %}
+                        <p><span class="font-weight-bold">Total Gain:</span><br>{{ trade.gain }}</p>
+                        <p><span class="font-weight-bold">Percentage Gain:</span><br>{{ trade.percent_gain }}</p>
+                    {% endif %}
+                </div>
+                <hr class="my-4 bg-dark">
+                <!--===== BUTTON - link to create new tracker =====-->
+                <a name="tradeCreate" href="{% url 'InvestCreate' %}" class="btn btn-secondary shadow">Add A Trade Tracker</a>
+            </div>
+
+            <!--===== STOCK TAB =====-->
+            <div class="tab-pane fade" id="stock" role="tabpanel" aria-labelledby="stock-tab">
+                <h5 class="card-title mt-2 mb-4">{{ stock.name }}</h5>
+                <div class="card-text">
+                    <p>
+                        <span class="font-weight-bold">Symbol:</span><br>{{ stock.symbol }}
+                    </p>
+                    <p>
+                        <span class="font-weight-bold">Category:</span><br>{{ stock.get_category_display }}
+                    </p>
+                    <p>
+                        <span class="font-weight-bold">Website:</span><br>
+                        <!--=== ANCHOR - create anchor tag only if website link =====-->
+                        {% if stock.link is not None %}
+                            <a target="_blank" href="{{ object.link }}">{{ stock.link }}</a>
+                        {% else %}
+                            <span>{{ stock.link }}</span>
+                        {% endif %}
+                    </p>
+                    <p>
+                        <span class="font-weight-bold">Notes:</span><br>{{ stock.notes }}
+                    </p>
+                </div>
+                <hr class="my-4 bg-dark">
+                <!--===== BUTTON - link to create new tracker=====-->
+                <a name="tradeCreate" href="{% url 'StockDetail' pk=stock.id %}" class="btn btn-secondary shadow">View {{ stock.symbol }} Details and Trades</a>
+            </div>
+
+            <!--===== EDIT TAB =====-->
+            <div class="tab-pane fade" id="edit" role="tabpanel" aria-labelledby="edit-tab">
+                <h5 class="card-title mt-2 mb-4">{{ stock.name }}</h5>
+
+                <form name="tradeForm" method="POST" action="{% url 'TradeUpdate' pk=trade.id %}">
+                    <!-- Cross Site Request Forgery (csrf_token) protection -->
+                    {% csrf_token %}
+                    <!-- Render each field  -->
+                    {% for field in trade_form %}
+                    <div class="fieldWrapper form-group" aria-required="{% if field.field.required %}true{% else %}false{% endif %}">
+                        <!-- CHECKBOX in Bootstrap -->
+                        {% if 'paper' in field.label|lower %}
+                            <div class="form-check">
+                                {{ field }}
+                                <label class="form-check-label">Paper Trade</label>
+                            </div>
+                        <!-- TEXT BOX FIELD in Bootstrap -->
+                        {% else %}
+                            {{ field.label_tag }}
+                            {{ field }}
+                        {% endif %}
+                        <!-- FIELD ERROR message -->
+                        {% if field.errors %}
+                            {% for error in field.errors %}
+                                <small class="form-text text-danger">{{ error }}</small>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    <!--===== BUTTONS =====-->
+                    <div class="mt-5">
+                        <a name="tradeDetail" href="{% url 'TradeDetail' pk=trade.id %}" class="btn btn-secondary shadow">Cancel</a>
+                        <button name="tradeForm" type="submit" class="btn btn-success shadow">Save Changes</button>
+                        <button type="button" name="deleteConfirm" class="btn btn-danger shadow mx-2" data-toggle="modal" data-target="#deleteConfirm">Delete</button>
+                    </div>
+                </form>
+                <!--===== DELETE CONFIRM MODAL =====-->
+                <div class="modal fade" id="deleteConfirm" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <!--=== MODAL CONTENT ===-->
+                        <div class="modal-content">
+                            <!-- HEADER -->
+                            <div class="modal-header text-danger">
+                                <h5 class="modal-title" id="modalLongTitle">Confirm Delete</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <!-- BODY -->
+                            <div class="modal-body">
+                                <p>Please be sure you want to delete this trade tracker.</p>
+                                <p><b>This action can not be undone.</b></p>
+                            </div>
+                            <!-- FOOTER -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <a name="delete" href="{% url 'DeleteTrade' pk=trade.id %}" class="btn btn-danger">Delete Data</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--===== CARD FOOTER - MESSAGE - Success/Error =====-->
+        {% if messages %}
+            <!-- check if message is for the TRADE form -->
+            {% for message in messages %}
+                {% if 'trade' in message.tags %}
+                    <div class="card-footer text-center alert-{{ message.level_tag }}">
+                        <small>{{ message }}</small>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+```
 
 ## Webpage Generator
 

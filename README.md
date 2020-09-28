@@ -4,7 +4,9 @@ Python modules and solutions. Most projects were completed in about 2 hours exce
 
 ## CONTENTS
 - [Django Project: Investment Portfolio Tracker](#django-project)  
-  1. [Story 1: Setup](#story-1-setup)
+  1. [Story 1: Base/Home](#story-1-base)
+  2. [Story 2: Create](#story-2-create)
+  3. [Story 3: Index Page](#story-3-index)
 - [Webpage Generator](#webpage-generator)
 
 ## Django Project
@@ -19,7 +21,9 @@ The Investment Portfolio Tracker is a web application designed to keep track of 
 - [Forms](#forms)
 
 ### Stories
-1. [Story 1: Setup](#story-1-setup)
+1. [Story 1: Base/Home](#story-1-base)
+2. [Story 2: Create](#story-2-create)
+3. [Story 3: Index Page](#story-3-index)
 
 ### Views
 ```python
@@ -332,7 +336,7 @@ class TradeForm(ModelForm):
             print('Invalid Close date format')
 ```
 
-## Story 1: Setup
+## Story 1: Base
 
 ### Commit
 - Version control with team on larger app
@@ -487,6 +491,223 @@ class TradeForm(ModelForm):
 {% block main %}{% endblock %}
 ```
 
+## Story 2: Create Page
+
+### Commit
+- Create two linked models and add a migration
+-	Create a model form that will include any inputs the user needs to make
+-	Add a template app folder for creating a new item in either model.
+-	Add a views function that renders the create page and utilizes the model form to save the collection item to the database.
+-	Validation added to models.
+-	Add responsive styling to form and templates to use Bootstrap.
+-	Add message routing to specific form on template.
+
+### Interface
+![alt text](https://github.com/alex-moffat/Python-Projects/blob/master/Live-Project-Python/Screenshot_create_full.jpg "Create_Full")
+
+### Create
+```HTML
+<!--========== MAIN CONTENT ==========-->
+{% block main %}
+<!-- Bootstrap card deck - includes stock and trade forms as cards -->
+<div class="container my-5">
+    <div class="card-deck">
+        <!--===== STOCK FORM =====-->
+        <div id="stock-form" class="card shadow">
+            <img src="{% static 'InvestmentApp/img/stock-picks_800_wide.jpg' %}" class="card-img-top" alt="stock-pick">
+            <!--===== CARD BODY =====-->
+            <div class="card-body">
+                <h4 class="card-title text-center font-weight-bold">Stock Tracker</h4>
+                <p class="card-text">
+                    <form name="stockForm" method="POST" action="{% url 'StockCreate' %}">
+                        <!-- Cross Site Request Forgery (csrf_token) protection -->
+                        {% csrf_token %}
+                        <!-- Render each field  -->
+                        {% for field in stock_form %}
+                        <div class="form-group {%if field.errors %}is-invalid{%endif%}">
+                            {{ field.label_tag }}
+                            {{ field }}
+                            <!-- FIELD ERROR message -->
+                            <small class="form-text text-danger">{{ field.errors }}</small>
+                        </div>
+                        {% endfor %}
+                        <div class="pt-3 px-5">
+                            <button name="stockForm" type="submit" class="btn btn-secondary btn-block shadow">Save Stock/Index</button>
+                        </div>
+                    </form>
+                </p>
+            </div>
+            <!--===== CARD FOOTER - MESSAGE - Success/Error =====-->
+            {% if messages %}
+                <!-- check if message is for the STOCK form -->
+                {% for message in messages %}
+                    {% if 'stock' in message.tags %}
+                        <div class="card-footer text-center alert-{{ message.level_tag }}">
+                            <small>{{ message }}</small>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <!--===== TRADE FORM =====-->
+        <div id="trade-form" class="card shadow">
+            <img src="{% static 'InvestmentApp/img/stock-trade_800_wide.jpg' %}" class="card-img-top" alt="stock-trade">
+            <!-- CARD BODY Title and form in main body -->
+            <div class="card-body">
+                <h4 class="card-title text-center font-weight-bold">Trade Tracker</h4>
+                <p class="card-text">
+                    <form name="tradeForm" method="POST" action="{% url 'TradeCreate' %}">
+                        <!-- Cross Site Request Forgery (csrf_token) protection -->
+                        {% csrf_token %}
+                        <!-- Render each field  -->
+                        {% for field in trade_form %}
+                        <div class="form-group {%if field.errors %}is-invalid{%endif%}">
+                            <!-- CHECKBOX in Bootstrap -->
+                            {% if 'paper' in field.label|lower %}
+                                <div class="form-check">
+                                    {{ field }}
+                                    <label class="form-check-label">Paper Trade</label>
+                                </div>
+                            <!-- TEXT BOX FIELD in Bootstrap -->
+                            {% else %}
+                                {{ field.label_tag }}
+                                {{ field }}
+                            {% endif %}
+                            <!-- FIELD ERROR message -->
+                            {% for error in field.errors %}
+                                <small class="form-text text-danger">{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                        <div class="pt-2 px-5">
+                            <button name="tradeForm" type="submit" class="btn btn-secondary btn-block shadow">Save Trade</button>
+                        </div>
+                    </form>
+                </p>
+            </div>
+            <!-- CARD FOOTER - MESSAGE - Success/Error -->
+            {% if messages %}
+                <!-- check if message is for the TRADE form -->
+                {% for message in messages %}
+                    {% if 'trade' in message.tags %}
+                        <div class="card-footer text-center alert-{{ message.level_tag }}">
+                            <small>{{ message }}</small>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+```
+
+## Story 3: Index Page
+
+### Commit
+-	Create index page that is linked from home page
+-	Add a function that gets all the items from the database and sends them to the template
+-	Display a list of items in the database with the fields for that item displayed with labels/headers
+-	Link app's home page to the main home page.
+-	Add responsive styling to index template.
+-	Add link to create new item in either database table
+-	Dynamically add anchor tags to fields that are html references
+
+### Interface
+![alt text](https://github.com/alex-moffat/Python-Projects/blob/master/Live-Project-Python/Screenshot_index_full_1.jpg "Index_1")
+![alt text](https://github.com/alex-moffat/Python-Projects/blob/master/Live-Project-Python/Screenshot_index_full_2.jpg "Index_2")
+
+### Index
+```HTML
+<!--========== MAIN CONTENT ==========-->
+{% block main %}
+
+    <!--===== STOCK TABLE =====-->
+    <div class="container mt-5">
+        <div id="stock-table" class="card shadow">
+            <div class="card-header text-center">
+                <h4 class="font-weight-bold">Stock Watchlist</h4>
+            </div>
+            <div class="card-body">
+                <div class="card-text mb-4">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">Symbol</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Website</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for object in stocks %}
+                                    <tr>
+                                        <th class="click-cell" scope="row"><a href="{% url 'StockDetail' pk=object.id %}">{{ object.symbol }}</a></th>
+                                        <td class="click-cell"><a href="{% url 'StockDetail' pk=object.id %}">{{ object.name }}</a></td>
+                                        <td class="click-cell"><a href="{% url 'StockDetail' pk=object.id %}">{{ object.get_category_display }}</a></td>
+                                        <!--===== ANCHOR - create anchor tag only if website link =====-->
+                                        {% if object.link is not None %}
+                                            <td><a target="_blank" href="{{ object.link }}"><small>{{ object.link }}</small></a></td>
+                                        {% else %}
+                                            <td class="click-cell"><a href="{% url 'StockDetail' pk=object.id %}"></a>{{ object.link }}</td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--===== BUTTON - link to create new tracker=====-->
+                <a name="stockCreate" href="{% url 'InvestCreate' %}" class="btn btn-secondary shadow">Add New Stock Tracker</a>
+            </div>
+        </div>
+    </div>
+
+    <!--===== TRADE TABLE =====-->
+    <div class="container my-5">
+        <div id="trade-table" class="card shadow">
+            <div class="card-header text-center">
+                <h4 class="font-weight-bold">Trade List</h4>
+            </div>
+            <div class="card-body">
+                <div class="card-text mb-4">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">Stock</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Open</th>
+                                    <th scope="col">Open Cost</th>
+                                    <th scope="col">Close</th>
+                                    <th scope="col">Close Cost</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for trade in trades %}
+                                    <tr>
+                                        <th class="click-cell" scope="row"><a href="{% url 'TradeDetail' pk=trade.id %}">{{ trade.stock }}</a></th>
+                                        <td class="click-cell"><a href="{% url 'TradeDetail' pk=trade.id %}">{{ trade.quantity }}</a></td>
+                                        <td class="click-cell"><a href="{% url 'TradeDetail' pk=trade.id %}">{{ trade.open }}</a></td>
+                                        <td class="click-cell"><a href="{% url 'TradeDetail' pk=trade.id %}">{{ trade.open_cost }}</a></td>
+                                        <td class="click-cell"><a href="{% url 'TradeDetail' pk=trade.id %}">{{ trade.close }}</a></td>
+                                        <td class="click-cell"><a href="{% url 'TradeDetail' pk=trade.id %}">{{ trade.close_cost }}</a></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--===== BUTTON - link to create new tracker=====-->
+                <a name="tradeCreate" href="{% url 'InvestCreate' %}" class="btn btn-secondary shadow">Add New Trade Tracker</a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+```
 
 ## Webpage Generator
 

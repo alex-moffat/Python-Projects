@@ -9,6 +9,9 @@ Python modules and solutions. Most projects were completed in about 2 hours exce
   3. [Story 3: Index Page](#story-3-index)
   4. [Story 4: Detail Pages](#story-4-details)
   5. [Story 5: Edit Pages](#story-5-edits)
+- [File Transfer Demo](#file-transfer-demo)
+- [Icon Converter](#icon-converter)
+- [Naughty or Nice Game](#naughty-or-nice-game)
 - [Webpage Generator](#webpage-generator)
 
 ## Django Project
@@ -728,7 +731,7 @@ class TradeForm(ModelForm):
 ### Interface
 ![alt text](https://github.com/alex-moffat/Python-Projects/blob/master/Live-Project-Python/screenshots_details.jpg "Details_Pages")
 
-### Stock Details
+### Stock Details/Edit
 ```HTML
 {% block main %}
 <!--===== STOCK DETAIL =====-->
@@ -1093,6 +1096,354 @@ class TradeForm(ModelForm):
 </div>
 
 {% endblock %}
+```
+## File Transfer Demo
+
+### Commit
+- A program to identify & move all .txt files from one folder to another with the click of a button.
+- Find all .txt files in source folder modified in the last 24 hours and copy to destination folder.
+- GUI allowing user to browse and choose a specific folder that will contain the files to copied/moved from.
+- GUI allowing user to browse and choose a specific folder that will receive the copied files.
+- GUI allowing user to manually initiate the 'file check' process that is performed by the script.
+
+### Interface
+![alt text](https://github.com/alex-moffat/Python-Projects/blob/master/File%20Transfer%20Program/Screenshot_file_transfer.jpg "File_Transfer")
+
+### Code
+```python
+# PYTHON: 3.8.2
+# AUTHOR: Alex Moffat
+# PURPOSE: File Transfer Demo
+#=============================================================================
+description = """
+This program was written by Alex Moffat.\n
+This is a demonstration of programming based on requirements given from The Tech Academy Python Course. \n
+"""
+requirements="""
+A program to identify & move all .txt files from one folder to another with the click of a button.
+Find all .txt files in source folder modified in the last 24 hours and copy to destination folder.
+GUI allowing user to browse and choose a specific folder that will contain the files to copied/moved from.
+GUI allowing user to browse and choose a specific folder that will receive the copied files.
+GUI allowing user to manually initiate the 'file check' process that is performed by the script.
+"""
+contact = """
+Alex Moffat\n
+wamoffat4@gmail.com\n
+(917) 674-4820"""
+
+#===== TAGS
+"""
+ datetime, now, deltatime, total_seconds, open, write, close, os, getmtime, listdir, join,
+ shutil, move, filedialog, messagebox, path error checking
+"""
+#=============================================================================
+
+#===== IMPORTED MODULES
+import os
+import shutil
+from tkinter import *
+from tkinter import messagebox
+from tkinter import filedialog
+from datetime import *
+
+#===== VARIABLES
+tStart = datetime.now() # script timing
+tInc = datetime.now() # script increment timing
+source = "" # folder where the source files are
+destination = "" # folder where files should be transfered to
+
+#========== SCRIPT TIMING - gets elapsed time of script execution, reset increment time
+def sTime(name):
+    global tInc
+    if name != None:
+        iTime = round(timedelta.total_seconds(datetime.now() - tInc) * 1000)
+        tTime = round(timedelta.total_seconds(datetime.now() - tStart) * 1000)
+        print("SCRIPT {} completed in {} ms and total time from start is {} ms\n".format(name, iTime , tTime))
+    tInc = datetime.now() 
+
+
+#=============================================================
+#========== TKINTER GUI - CREATE tkinter window with grid
+#=============================================================
+def createGUI():
+    #===== WINDOW =====
+    win = Tk()
+    #=== title & icon
+    win.title('Extract & Transfer txt Files')
+    win.iconbitmap('favicon.ico')
+    #=== size & position center
+    win.resizable(width=False, height=False)
+    #===== ENTRIES =====
+    v1 = StringVar()
+    v2 = StringVar()
+    e1 = Entry(win, width=100, textvariable = v1)
+    e2 = Entry(win, width=100, textvariable = v2)
+    #=== size & position
+    e1.grid(row=0, column=1, columnspan=3, padx=(10,20), pady=(40,10), sticky=N+S+W+E)
+    e2.grid(row=1, column=1, columnspan=3, padx=(10,20), pady=(0,10), sticky=N+S+W+E)
+    #===== BUTTONS =====
+    b1 = Button(win, text = "Source")
+    b2 = Button(win, text = "Destination")
+    b3 = Button(win, text = "Transfer All txt Files")
+    b4 = Button(win, text = "Copy Recently Modified Files")
+    b5 = Button(win, text = "Close Program")
+    #=== configure
+    b1.configure(command=lambda obj=v1: getDir(obj))
+    b2.configure(command=lambda obj=v2: getDir(obj))
+    b3.configure(height=2, command=lambda sPath=v1, dPath=v2: extractTextFiles(sPath, dPath))
+    b4.configure(height=2, command=lambda sPath=v1, dPath=v2: copyRecent(sPath, dPath))
+    b5.configure(height=2, command=win.destroy)
+    #=== size & position
+    b1.grid(row=0, column=0, padx=(20,10), pady=(40,10), sticky=W+E)
+    b2.grid(row=1, column=0, padx=(20,10), pady=(0,10), sticky=W+E)
+    b3.grid(row=2, column=0, padx=(20,10), pady=(0,20))
+    b4.grid(row=2, column=1, padx=(10,10), pady=(0,20), sticky=W)
+    b5.grid(row=2, column=3, padx=(10,20), pady=(0,20), sticky=E)
+    sTime('createGUI') # script timer
+    win.mainloop()
+    
+#========== GET DIR - tkinter askdirectory, invoke dialog modal, get folder path from user, place folderpath into Entry widget
+def getDir(obj):
+    sPath = filedialog.askdirectory()
+    obj.set(sPath)
+
+#========== CHECK PATHS - make sure both paths are valid
+def checkPaths(sPath, dPath):
+    global source, destination
+    source = sPath.get().strip()
+    destination = dPath.get().strip()
+    if source == "" or destination == "":
+        #===== make sure both paths are selected
+        messagebox.showwarning("INVALID PATH", "Make sure both the source and destination folders are selected.")
+        return False
+    elif source == destination:
+        #===== make sure both paths different from each other
+        messagebox.showwarning("INVALID PATH", "Make sure the source and destination folders are different.")
+        return False
+    else:
+        #===== make sure source path is valid
+        try:
+            files = os.listdir(source)            
+        except:
+            messagebox.showwarning("INVALID PATH", "Source path is not valid. Please select another source folder.")
+            return False
+        try:
+            files = os.listdir(destination)            
+        except:
+            messagebox.showwarning("INVALID PATH", "Destination path is not valid. Please select another destination folder.")
+            return False
+    return True
+
+#========== EXTRACT TEXT FILES - find all .txt files in source folder
+def extractTextFiles(sPath, dPath):
+    sTime(None)
+    if checkPaths(sPath, dPath): # check if both paths are valid
+        rString = ""
+        fCount = 0
+        #===== search all files in source folder for .txt files
+        files = os.listdir(source)
+        for f in files:
+            fPath = os.path.join(source, f)
+            #=== get txt files, count, get last modified date, transfer to destination 
+            if fPath.endswith('.txt'):
+                fCount += 1
+                mTime = date.fromtimestamp(os.path.getmtime(fPath))
+                rString = rString + '\n' + f + ' --> Last modified: ' + str(mTime)
+                shutil.move(fPath, destination)
+        print('There where {} txt files moved from the source folder to the destination folder: {}'.format(fCount, rString))
+    sTime('extractTextFiles') # script timer
+
+#========== COPY RECENT - find all .txt files in source folder modified in the last 24 hours and copy to destination folder
+def copyRecent(sPath, dPath):
+    sTime(None)
+    if checkPaths(sPath, dPath): # check if both paths are valid 
+        rString = ""
+        fCount = 0
+        #===== search all files in source folder for .txt files
+        files = os.listdir(source)
+        for f in files:
+            fPath = os.path.join(source, f)
+            #=== get txt files, count, get last modified date, copy to destination 
+            if fPath.endswith('.txt'):
+                mTime = datetime.fromtimestamp(os.path.getmtime(fPath))
+                #=== Files modified in the last 24 hours (86400 seconds)
+                if timedelta.total_seconds(tStart - mTime) <= 86400: 
+                    fCount += 1
+                    rString = rString + '\n' + f + ' --> Last modified: ' + str(mTime)
+                    shutil.copy(fPath, destination)
+        print('There where {} recently modified txt files copied to the destination folder: {}'.format(fCount, rString))
+    sTime('copyRecent') # script timer
+    
+#=============================================================
+#========== MAIN
+#=============================================================        
+if __name__ == '__main__':
+    createGUI()    
+```
+
+## Icon Converter
+
+### Commit
+This module designed to convert an image to a base64 string and a base64 string to image:
+- Convert Image to String and return result.
+- Convert String to Image and return result.
+- Take image path - reads 'image' and writes base64 string to txt file with same name in same path.
+
+### Code
+```python
+# Python: 3.8.2
+# Author: Alex Moffat
+# Purpose: Convert Image to String, Convert String to Image 
+#=============================================================
+"""TAGS:
+base64, b64encode, b64decode
+"""
+#=============================================================
+description = """
+This program was written by Alex Moffat.\n
+This module designed to convert an image to a base64 string and a base64 string to image.\n
+This module has 3 methods:\r
+1. image2String(i) - takes image path (i) - reads 'image' and returns base64 string.\r
+2. image2Text(i) - takes image name in same folder (i) - reads 'image' and writes base64 string to txt file with same name.\r
+3. string2Image(s, f) - takes base64 string (s) & 'fileName.png' (f) - writes 'image' file"""
+
+contact = """
+Alex Moffat\n
+wamoffat4@gmail.com\n
+(917) 674-4820"""
+#=============================================================
+
+#========== IMPORTED MODULES
+import base64
+
+#========== IMAGE 2 STRING - takes image path (i) - uses "rb" read binary switch, reads "image" and returns base64 string
+def image2String(i):
+    with open(i, "rb") as imageFile:
+        rStr = base64.b64encode(imageFile.read())
+        print(rStr)
+        return rStr
+
+#========== IMAGE 2 Text - takes image name in same folder (i) - uses "rb" read binary switch, reads "image" and writes base64 string to txt file with same name
+def image2Text(i):
+    bStr=image2String(i)
+    fileName = i.split('.')[0] + '.txt'
+    newFile = open(fileName, "wb")
+    newFile.write(bStr)
+    newFile.close()
+
+#========== STING 2 IMAGE - takes base64 string (s) & "fileName.png" (f) - uses "wb" write binary switch, writes "image"
+def string2Image(s, f):
+    newFile = open(f, "wb")
+    newFile.write(base64.b64decode(s))
+    newFile.close()
+
+
+#=============================================================
+#========== MAIN
+#=============================================================
+if __name__ == '__main__':
+    pass
+```
+
+## Naughty or Nice Game
+
+### Description
+GA console word game that presents the user with random scenarios and asks which option they will choose. At the end the user is told if they win or lose and given the option to play again. This complete project was a simple example of loops and if/then statements that was completed in about 2 hours. 
+
+### Code
+```python
+# Python: 3.8.2
+# Author: Alex Moffat
+# Purpose: A game that shows off basic programming skills
+
+#===== IMPORTED MODULES
+import random
+
+#===== GLOBAL VARIABLES 
+scenes, name, yes, nope = [], "", 0, 0
+print(name)
+
+#===== SET SCENES : creates a list of 5 scenarios (tuples) of stranger interactions  - Sets messages for scenario, question, nope response, yes response
+def setScenes():
+    global scenes
+    scenes = [ 
+    ('A smelly stranger approaches you and says hello.', 'Do you say hello?', 'The stranger glares at you and storms off...', 'The stranger smiles and says you made his day...'), 
+    ('You are in a hurry and an old man approaches and asks for directions.', 'Do you stop to give him directions?', 'The old man seems confused as you walk away...', 'The old man thanks you for your time...'),
+    ('An old woman with a walker is crossing very slowly across a busy street.', 'Do you help her across the street?', 'The old women falls down at the curb on the other side...', 'The old women says you are very kind...'),
+    ('A stranger wants to have a conversation about the weather.', 'Do you have a conversation about the weather?', 'The stranger mutters something about having no friends and walks away...', 'You find out the stranger lives in your home town and knows your mother...'),
+    ('You are in a rush to get to work and a stranger asks for the time.', 'Do you stop to give the time?', 'The stranger yells that you are mean as you are running away...', 'The stranger says have a great day and enjoy the sunshine...')]
+
+#===== START GAME : Check if played before --> start game
+def startGame():
+    print("\nThank you for playing again {}!".format(name)) if name != "" else getName()
+    setScenes()
+    naughtyNice()
+
+#===== GET NAME : Get players name for global variable 'name', reset yes and nope scores to zero
+def getName():
+    global name, yes, nope
+    go = True
+    while go:
+        name = input('What is your name? \n>>> ').capitalize()
+        if name == "":
+            print('You need to provide a name!')
+        else:
+            print("\nWelcome {}".format(name))
+            print('\nIn this game you will be greeted by several different people.')
+            print('You can choose to be naughty or nice, but at the end of the game your fate will be sealed by your actions.')
+            yes, nope, go = 0, 0, False
+
+#===== NAUGHTYNICE - Check if valid answer then score 1 yes/nope
+def naughtyNice():
+    global scenes, yes, nope
+    go = True
+    rStranger = random.sample(scenes,1)[0] #pull a random scene tuple from strangers list
+    scenes.remove(rStranger) # remove current scene so we don't repeat
+    while go:
+        pick = input('\n{scene} \n{question} (Y/N): \n>>> '.format(scene = rStranger[0], question = rStranger[1])).upper()
+        if pick == "": # check if left blank
+            print('You need to provide an answer\n>>> ')
+        elif pick != "Y" and pick != "N": # check if valid answer
+            print('You need to answer with \"Y\" (be nice) or \"N\" (be naughty)')            
+        else: # valid answer - give message and score
+            go = False
+            if pick == 'N':
+                print("\n{N}".format(N = rStranger[2]))
+                nope += 1
+            else:
+                print("\n{Y}".format(Y = rStranger[3]))
+                yes += 1
+    print("\n{player}, your current total: \n({naughty} Naughty) and ({nice} Nice)".format(player = name, naughty = nope, nice = yes))
+    checkScore()
+
+#===== SCORE - when player has answered YES or nope 3 times - win/lose condition is met - otherwise continue game
+def checkScore(): 
+    if yes > 2: # WIN - Nice condition
+        print("\nNice job {}, you win! \nYou are nice and Santa will bring you lots of presents this year. \nEveryone loves you and you've made lots of friends along the way!".format(name))
+    elif nope > 2: # LOSE - Naughty condition
+        print("\nToo bad {}, game over! \nYou are naughty and Santa is not bringing you any presents this year. \nKeep it up and you will live alone with no friends to call your own!".format(name))
+    else:
+        naughtyNice()
+    again()
+
+#===== AGAIN - ask if play again - terminate game or reset variables and start again 
+def again():
+     go = True
+     while go:
+         choice = input('\nDo you want to play again? (Y/N): \n>>> ').upper()
+         if choice == 'Y':
+             go = False
+             startGame()
+         elif choice == 'N':
+             go = False            
+             print("\nOh, so sad, sorry to see you go!")
+             quit()
+         else:
+             print("\nEnter (Y) for 'Yes' or (N) for 'No':\n>>> ")
+
+
+if __name__ == '__main__':
+    startGame()
 ```
 
 ## Webpage Generator

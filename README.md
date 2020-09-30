@@ -2,6 +2,11 @@
 Python modules and solutions. Most projects were completed in about 2 hours except two: The "Live-Project" was a two-week project to create a Python/Django dynamic and fully reactive investment portfolio traker website from scratch. The "Phonebook Demo" was a four-day project to create a tKinter contact list interface with database with export features.   
 
 ### Video Hightlight: Django Project
+
+<figure class="video_container">
+  <iframe src="https://www.youtube.com/embed/3Dia9XkRW04" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="true"> </iframe>
+</figure>
+
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=3Dia9XkRW04" target="_blank"><img src="https://github.com/alex-moffat/Python-Projects/blob/master/Live-Project-Python/Screenshot_home_full.jpg" alt="Django_Project_Demo" border="10" /></a>
 
 ### Video Hightlight: Tkinter Phonebook Demo

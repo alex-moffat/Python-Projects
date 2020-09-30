@@ -4,7 +4,7 @@ Python modules and solutions. Most projects were completed in about 2 hours exce
 ### Video Hightlight: Django Project
 
 <figure class="video_container">
-  <iframe src="https://www.youtube.com/embed/3Dia9XkRW04" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="true"> </iframe>
+  <iframe src="https://www.youtube.com/embed/3Dia9XkRW04" frameborder="0" allowfullscreen="true"> </iframe>
 </figure>
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=3Dia9XkRW04" target="_blank"><img src="https://github.com/alex-moffat/Python-Projects/blob/master/Live-Project-Python/Screenshot_home_full.jpg" alt="Django_Project_Demo" border="10" /></a>

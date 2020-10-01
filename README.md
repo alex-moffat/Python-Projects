@@ -2,7 +2,7 @@
 Python modules and solutions with development time between 2-hours and 2-weeks. Most projects were completed in about 2 hours except two: The "Live-Project" was a two-week project to create a Python/Django dynamic and fully reactive investment portfolio traker website from scratch. The "Phonebook Demo" was a four-day project to create a tKinter contact list interface with database with export features.   
 
 ### Video Hightlight: Django Project
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=3Dia9XkRW04" target="_blank"><img src="https://github.com/alex-moffat/Python-Projects/blob/master/Live-Project-Python/Screenshot_home_full.jpg" alt="Django_Project_Demo_play" border="10" /></a>
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=3Dia9XkRW04" target="_blank"><img src="https://github.com/alex-moffat/Python-Projects/blob/master/Live-Project-Python/Screenshot_home_full_play.jpg" alt="Django_Project_Demo" border="10" /></a>
 
 ### Video Hightlight: Tkinter Phonebook Demo
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=d3SrnxGAbEs" target="_blank"><img src="https://github.com/alex-moffat/Python-Projects/blob/master/Tkinter%20Phonebook/Screenshot_Phonebook_play.jpg" alt="Tkinter_Phonebook_Demo" border="10" /></a>

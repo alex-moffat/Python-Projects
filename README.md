@@ -731,7 +731,7 @@ class TradeForm(ModelForm):
 -	Add links for each element in the details page that directs to another details page
 -	Display all the details of the item on the details page and all related objects from another table
 -	Add responsive and dynamic styling based on data in details templates.
--	Add anchor selection and hover styling to entire row of a table 
+-	<b>Add anchor selection and hover styling to entire row of a table using only CSS</b> 
 -	Add calculated properties to model
 
 ### Interface
